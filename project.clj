@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
+                 [cheshire "5.0.1"]
                  [org.clojars.gnarmis/sentimental "0.1.1-SNAPSHOT"]]
   :plugins [[lein-ring "0.8.2"]
             [lein-swank "1.4.4"]]
