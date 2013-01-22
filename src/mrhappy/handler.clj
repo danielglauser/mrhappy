@@ -10,11 +10,6 @@
 (defn parse-subject
   [text] (re-find #"Subject: " text))
 
-(defn analyze [text]
-  (let [sentiment (categorize text)
-        subject (parse-subject text)]
-    {:subj subject :sentiment sentiment}))
-
 (defn convert-to-percentage
   "Takes in one of the following forms and maps it to a percentage of happiness:
 strongsubj-positive 100%
@@ -33,6 +28,11 @@ strongsubj-negative   0%
     (= "weaksubj-negative") 20
     (= "strongsubj-negative") 0))
 
+(defn analyze [text]
+  (let [sentiment (categorize text)
+        subject (parse-subject text)]
+    {:subj subject :sentiment (convert-to-percentage sentiment)}))
+
 (defn to-json
   "Takes a seq of percentages and returns json of the form: {:emails [{:subj foo :sentiment 80}, {:subj bar :sentiment 20}, ...]}"
   [per-seq] )
@@ -43,9 +43,7 @@ strongsubj-negative   0%
     (println (str "Found " (count files) " file(s)"))
     (map #(-> %
               slurp
-              analyze
-              convert-to-percentage
-              )
+              analyze)
          (rest files))))
 
 (defroutes app-routes
