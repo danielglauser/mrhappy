@@ -1,5 +1,7 @@
 (ns mrhappy.handler
-  (:use compojure.core)
+  (:use [compojure.core]
+        [ring.middleware.resource]
+        [ring.middleware.file])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]))
 
@@ -8,4 +10,5 @@
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (-> app-routes
+      (wrap-file "public")))
