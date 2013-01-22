@@ -269,12 +269,22 @@ h1:before {
 </div>
 </body>
 
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="js/jquery-latest.js"></script>
+  <script src="js/jquery.websocket-0.0.1.js"></script>
+  <script src="js/jquery.json-2.2.min.js"></script>
 
   <script>
 (function() {
 
-$('.controls > #sad').click(function() {
+var ws = $.websocket('ws://127.0.0.1:8080/', {
+  events: {
+    message: function(e) {
+      console.log(e);
+    }
+  }
+});
+
+function sadFace() {
   $('body').removeClass('neutral');
   $('body').removeClass('smile');
   $('body').addClass('frown');
@@ -290,9 +300,9 @@ $('.controls > #sad').click(function() {
   $('.mouth > h1').removeClass('neutral');
   $('.mouth > h1').removeClass('smile');
   $('.mouth > h1').addClass('frown');
-});
+}
 
-$('.controls > #neutral').click(function() {
+function neutralFace() {
   $('body').removeClass('frown');
   $('body').removeClass('smile');
   $('body').addClass('neutral');
@@ -308,9 +318,9 @@ $('.controls > #neutral').click(function() {
   $('.mouth > h1').removeClass('frown');
   $('.mouth > h1').removeClass('smile');
   $('.mouth > h1').addClass('neutral');
-});
+}
 
-$('.controls > #happy').click(function() {
+function happyFace() {
   $('body').removeClass('frown');
   $('body').removeClass('neutral');
   $('body').addClass('smile');
@@ -326,14 +336,22 @@ $('.controls > #happy').click(function() {
   $('.mouth > h1').removeClass('frown');
   $('.mouth > h1').removeClass('neutral');
   $('.mouth > h1').addClass('smile');
+}
+
+$('.controls > #sad').click(function() {
+  sadFace();
+});
+
+$('.controls > #neutral').click(function() {
+  neutralFace();
+});
+
+$('.controls > #happy').click(function() {
+  happyFace();
 });
 
 })();
   </script>
-
-  <div id="codepen-footer">
-    <a href="http://codepen.io/amdprophet/pen/txeGu" target="_self">Edit this Pen</a>
-  </div>
 
 </body>
 
