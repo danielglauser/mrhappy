@@ -1,25 +1,340 @@
+<!DOCTYPE html>
 <html>
+
 <head>
-  <title>Mr. Happy</title>
-  <link rel="stylesheet" type="text/css" href="css/mr-happy.css"/>
-  <script type="text/javascript" charset="utf-8" src="js/jquery-1.8.0.min.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/mr-happy.js"></script>
+
+  <meta charset="UTF-8">
+
+  <title>CSS Smiley Face - CodePen</title>
+
+  <link rel="stylesheet" href="css/normalize.css">
+
+  <style>
+@import url(http://fonts.googleapis.com/css?family=Chivo:900);
+*, *:before, *:after {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body.frown {
+  background-color: #30c0fc;
+  background-image: -webkit-gradient(radial, 50%, 0, 50%, 100, color-stop(0%, #28cafd), color-stop(100%, #30c0fc));
+  background-image: -webkit-radial-gradient(center, circle, #28cafd, #30c0fc);
+  background-image: -moz-radial-gradient(center, circle, #28cafd, #30c0fc);
+  background-image: -o-radial-gradient(center, circle, #28cafd, #30c0fc);
+  background-image: radial-gradient(center, circle, #28cafd, #30c0fc);
+}
+body.neutral {
+  background-color: #666666;
+  background-image: -webkit-gradient(radial, 50%, 0, 50%, 100, color-stop(0%, #cccccc), color-stop(100%, #c0c0c0));
+  background-image: -webkit-radial-gradient(center, circle, #cccccc, #c0c0c0);
+  background-image: -moz-radial-gradient(center, circle, #cccccc, #c0c0c0);
+  background-image: -o-radial-gradient(center, circle, #cccccc, #c0c0c0);
+  background-image: radial-gradient(center, circle, #cccccc, #c0c0c0);
+}
+body.smile {
+  background-color: #fcc030;
+  background-image: -webkit-gradient(radial, 50%, 0, 50%, 100, color-stop(0%, #fdca28), color-stop(100%, #fcc030));
+  background-image: -webkit-radial-gradient(center, circle, #fdca28, #fcc030);
+  background-image: -moz-radial-gradient(center, circle, #fdca28, #fcc030);
+  background-image: -o-radial-gradient(center, circle, #fdca28, #fcc030);
+  background-image: radial-gradient(center, circle, #fdca28, #fcc030);
+}
+
+.smiley-face {
+  height: 375px;
+  left: 50%;
+  margin: -188px 0 0 -205px;
+  position: absolute;
+  top: 50%;
+  width: 410px;
+}
+
+.eye {
+  border-radius: 50%;
+  height: 87px;
+  position: relative;
+  width: 87px;
+}
+.eye.frown {
+  background-color: #1582d0;
+}
+.eye.neutral {
+  background-color: #999999;
+}
+.eye.smile {
+  background-color: #d08215;
+}
+.eye:before, .eye:after {
+  background-color: #fff;
+  border-radius: 50%;
+  content: '';
+  position: absolute;
+}
+.eye:before {
+  height: 29px;
+  top: 14px;
+  right: 18px;
+  width: 29px;
+}
+.eye:after {
+  height: 12px;
+  right: 15px;
+  top: 42px;
+  width: 12px;
+}
+
+.left-eye {
+  float: left;
+  margin-bottom: 65px;
+}
+
+.right-eye {
+  float: right;
+}
+
+.freckles {
+  background-color: #fff;
+  border-radius: 50%;
+  height: 10px;
+  position: absolute;
+  top: 100px;
+  width: 10px;
+}
+.freckles:before, .freckles:after {
+  background-color: inherit;
+  border-radius: inherit;
+  content: '';
+  height: inherit;
+  position: absolute;
+  width: inherit;
+}
+
+.left-freckles {
+  left: 0;
+}
+.left-freckles:before {
+  left: -8px;
+  top: 17px;
+}
+.left-freckles:after {
+  right: -12px;
+  top: 12px;
+}
+
+.right-freckles {
+  right: 0;
+}
+.right-freckles:before {
+  left: -12px;
+  top: 12px;
+}
+.right-freckles:after {
+  right: -8px;
+  top: 17px;
+}
+
+.mouth {
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  width: inherit;
+}
+.mouth.frown {
+  background-color: #1582d0;
+  border-radius: 200px 200px 0px 0px;
+  height: 205px;
+  animation: frown 1.25s ease-out;
+}
+.mouth.neutral {
+  background-color: #999999;
+  border-radius: 0px 0px 0px 0px;
+  height: 20px;
+  animation: neutral 1.25s ease-out;
+}
+.mouth.smile {
+  background-color: #d08215;
+  border-radius: 0px 0px 200px 200px;
+  height: 205px;
+  animation: smile 1.25s ease-out;
+}
+
+h1 {
+  color: #fff;
+  font-family: 'Chivo', sans-serif;
+  font-size: 3.5em;
+  margin: 70px auto 0;
+  position: relative;
+  text-shadow: 0 5px 5px #f3a612;
+  text-transform: uppercase;
+  width: 200px;
+  z-index: 1;
+}
+h1.frown:before {
+  background-color: #22b5f9;
+  border-radius: 200px 200px 0px 0px;
+}
+h1.neutral:before {
+  background-color: #cccccc;
+  border-radius: 0px 0px 0px 0px;
+}
+h1.smile:before {
+  background-color: #f9b522;
+  border-radius: 200px 200px 0px 0px;
+}
+h1:before {
+  clip: rect(auto, auto, auto, auto);
+  content: '';
+  height: 190px;
+  left: -70px;
+  position: absolute;
+  top: -50px;
+  width: 350px;
+  z-index: -1;
+}
+
+@keyframes smile {
+  0% {
+    border-radius: 0px 0px 20px 20px;
+    height: 20px;
+  }
+
+  100% {
+    border-radius: 0px 0px 200px 200px;
+    height: 206px;
+  }
+}
+
+@keyframes frown {
+  0% {
+    border-radius: 20px 20px 0px 0px;
+    height: 20px;
+  }
+
+  100% {
+    border-radius: 200px 200px 0px 0px;
+    height: 206px;
+  }
+}
+
+@keyframes neutral {
+  0% {
+    border-radius: 0px 0px 0px 0px;
+    height: 20px;
+  }
+
+  100% {
+    border-radius: 0px 0px 0px 0px;
+    height: 20px;
+  }
+}
+
+.subject {
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+}
+.subject h1 {
+  text-shadow: none;
+}
+#codepen-footer,#codepen-footer *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}#codepen-footer{position:fixed;bottom:0;left:0;width:100%;padding:0 10px;height:30px;color:#eeeeee;background-color:#505050;background:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #505050), color-stop(100%, #383838));background:-webkit-linear-gradient(#505050,#383838);background:-moz-linear-gradient(#505050,#383838);background:-o-linear-gradient(#505050,#383838);background:linear-gradient(#505050,#383838);border-top:1px solid black;border-bottom:1px solid black;box-shadow:inset 0 1px 0 #6e6e6e,0 2px 2px rgba(0,0,0,0.4);font:12px/30px "Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;line-height:30px}#codepen-footer a{color:#a7a7a7;text-decoration:none}#codepen-footer a:hover{color:white}#footer-right{position:absolute;right:5px;top:0}#bs-button{padding:1px 6px 2px 19px;background:url(/images/browserstack.png),-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff4d1), color-stop(100%, #c9b67b));background:url(/images/browserstack.png),-webkit-linear-gradient(#fff4d1,#c9b67b);background:url(/images/browserstack.png),-moz-linear-gradient(#fff4d1,#c9b67b);background:url(/images/browserstack.png),-o-linear-gradient(#fff4d1,#c9b67b);background:url(/images/browserstack.png),linear-gradient(#fff4d1,#c9b67b);background-position:4px center,center center;background-repeat:no-repeat;background-size:12px 12px,cover;border:0;font:11px "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;border-radius:5px}#bs-button:hover{background:url(/images/browserstack.png),#fff4d1;background-position:4px center,center center;background-repeat:no-repeat;background-size:12px 12px,cover}
+
+  </style>
+
+  <script src="js/prefixfree.min.js"></script>
+
 </head>
-<body class="neutral">
-  <div class="smiley-face">
-    <div class="left-eye eye neutral"></div>
-    <div class="right-eye eye neutral"></div>
-    <div class="left-freckles freckles"></div>
-    <div class="right-freckles freckles"></div>
-    <div class="mouth neutral">
-      <h1 class="smile neutral"></h1>
-    </div>
+
+<body>
+
+  <body class="neutral">
+<div class="smiley-face">
+  <div class="left-eye eye neutral"></div>
+  <div class="right-eye eye neutral"></div>
+  <div class="left-freckles freckles"></div>
+  <div class="right-freckles freckles"></div>
+  <div class="mouth neutral">
+    <h1 class="smile neutral"></h1>
+  </div>
+</div>
+
+<div class="controls">
+  <input id="sad" type="button" value="Sad"/>
+  <input id="neutral" type="button" value="Neutral"/>
+  <input id="happy" type="button" value="Happy"/>
+</div>
+
+<div class="subject">
+  <h1>Subject</h1>
+</div>
+</body>
+
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+  <script>
+(function() {
+
+$('.controls > #sad').click(function() {
+  $('body').removeClass('neutral');
+  $('body').removeClass('smile');
+  $('body').addClass('frown');
+
+  $('.eye').removeClass('neutral');
+  $('.eye').removeClass('smile');
+  $('.eye').addClass('frown');
+
+  $('.mouth').removeClass('neutral');
+  $('.mouth').removeClass('smile');
+  $('.mouth').addClass('frown');
+
+  $('.mouth > h1').removeClass('neutral');
+  $('.mouth > h1').removeClass('smile');
+  $('.mouth > h1').addClass('frown');
+});
+
+$('.controls > #neutral').click(function() {
+  $('body').removeClass('frown');
+  $('body').removeClass('smile');
+  $('body').addClass('neutral');
+
+  $('.eye').removeClass('frown');
+  $('.eye').removeClass('smile');
+  $('.eye').addClass('neutral');
+
+  $('.mouth').removeClass('frown');
+  $('.mouth').removeClass('smile');
+  $('.mouth').addClass('neutral');
+
+  $('.mouth > h1').removeClass('frown');
+  $('.mouth > h1').removeClass('smile');
+  $('.mouth > h1').addClass('neutral');
+});
+
+$('.controls > #happy').click(function() {
+  $('body').removeClass('frown');
+  $('body').removeClass('neutral');
+  $('body').addClass('smile');
+
+  $('.eye').removeClass('frown');
+  $('.eye').removeClass('neutral');
+  $('.eye').addClass('smile');
+
+  $('.mouth').removeClass('frown');
+  $('.mouth').removeClass('neutral');
+  $('.mouth').addClass('smile');
+
+  $('.mouth > h1').removeClass('frown');
+  $('.mouth > h1').removeClass('neutral');
+  $('.mouth > h1').addClass('smile');
+});
+
+})();
+  </script>
+
+  <div id="codepen-footer">
+    <a href="http://codepen.io/amdprophet/pen/txeGu" target="_self">Edit this Pen</a>
   </div>
 
-  <div class="controls">
-    <input id="sad" type="button" value="Sad"/>
-    <input id="neutral" type="button" value="Neutral"/>
-    <input id="happy" type="button" value="Happy"/>
-  </div>
 </body>
+
 </html>
