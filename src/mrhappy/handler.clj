@@ -3,6 +3,8 @@
         [ring.middleware.resource]
         [ring.middleware.file]
         [sentimental.core])
+  (:import [org.webbitserver WebServer WebServers WebSocketHandler]
+            [org.webbitserver.handler StaticFileHandler])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [cheshire.core :refer :all]))
@@ -50,6 +52,38 @@ strongsubj-negative   0%
   (GET "/analyzed-email" [] (analyze-email))
   (route/not-found "Not Found"))
 
+(def webserver (atom nil))
+(def chanels (atom '()))
+
+
+(defn stop-server []
+  (.stop @webserver)
+  (reset! webserver nil))
+
+(defn websocket-server [passthrough]
+  (reset! webserver
+          (doto (WebServers/createWebServer 8080)
+            (.add "/websocket"
+                  (proxy [WebSocketHandler] []
+                    (onOpen [c] (do
+                                  (prn "opened" c)
+                                  (swap! chanels conj c)))
+                    (onClose [c] (do
+                                   (prn "closed" c)
+                                   (swap! chanels (fn [v] (remove #(= %1 c) v)))))
+                    (onMessage [channel msg] (println msg))))
+
+            (.add (StaticFileHandler. "./public/"))
+            (.start)))
+  passthrough)
+
+(defn ping [passthrough]
+  (doseq [channel @chanels]
+    (.send channel "Woop, there it is!"))
+  passthrough)
+
 (def app
   (-> app-routes
-      (wrap-file "public")))
+      (wrap-file "public")
+      websocket-server
+      ping))
