@@ -8,5 +8,6 @@
   :plugins [[lein-ring "0.8.2"]
             [lein-swank "1.4.4"]]
   :ring {:handler mrhappy.handler/app}
+  :jvm-opts ["-Xmx1024M" "-XX:MaxPermSize=128M"  "-server"]
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.3"]]}})
