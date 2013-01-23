@@ -144,19 +144,19 @@ body.smile {
   background-color: #1582d0;
   border-radius: 200px 200px 0px 0px;
   height: 205px;
-  animation: frown 1.25s ease-out;
+  animation: frown 0.5s ease-out;
 }
 .mouth.neutral {
   background-color: #999999;
   border-radius: 0px 0px 0px 0px;
   height: 20px;
-  animation: neutral 1.25s ease-out;
+  animation: neutral 0.5s ease-out;
 }
 .mouth.smile {
   background-color: #d08215;
   border-radius: 0px 0px 200px 200px;
   height: 205px;
-  animation: smile 1.25s ease-out;
+  animation: smile 0.5s ease-out;
 }
 
 h1 {
@@ -267,7 +267,7 @@ h1:before {
 </div>
 
 <div class="subject">
-  <h1>Subject</h1>
+  <h1></h1>
 </div>
 </body>
 
@@ -279,91 +279,91 @@ h1:before {
 
 $(document).ready(function() {
   function setSubject(subject) {
-    $('.subject > h1').fadeOut(function() {
+    $('.subject > h1').fadeOut(300, function() {
       $('.subject > h1').html(subject);
-      $('.subject > h1').fadeIn();
+      $('.subject > h1').fadeIn(300);
     });
   }
 
+  function sadFace() {
+    $('body').removeClass('neutral');
+    $('body').removeClass('smile');
+    $('body').addClass('frown');
+
+    $('.eye').removeClass('neutral');
+    $('.eye').removeClass('smile');
+    $('.eye').addClass('frown');
+
+    $('.mouth').removeClass('neutral');
+    $('.mouth').removeClass('smile');
+    $('.mouth').addClass('frown');
+
+    $('.mouth > h1').removeClass('neutral');
+    $('.mouth > h1').removeClass('smile');
+    $('.mouth > h1').addClass('frown');
+  }
+
+  function neutralFace() {
+    $('body').removeClass('frown');
+    $('body').removeClass('smile');
+    $('body').addClass('neutral');
+
+    $('.eye').removeClass('frown');
+    $('.eye').removeClass('smile');
+    $('.eye').addClass('neutral');
+
+    $('.mouth').removeClass('frown');
+    $('.mouth').removeClass('smile');
+    $('.mouth').addClass('neutral');
+
+    $('.mouth > h1').removeClass('frown');
+    $('.mouth > h1').removeClass('smile');
+    $('.mouth > h1').addClass('neutral');
+  }
+
+  function happyFace() {
+    $('body').removeClass('frown');
+    $('body').removeClass('neutral');
+    $('body').addClass('smile');
+
+    $('.eye').removeClass('frown');
+    $('.eye').removeClass('neutral');
+    $('.eye').addClass('smile');
+
+    $('.mouth').removeClass('frown');
+    $('.mouth').removeClass('neutral');
+    $('.mouth').addClass('smile');
+
+    $('.mouth > h1').removeClass('frown');
+    $('.mouth > h1').removeClass('neutral');
+    $('.mouth > h1').addClass('smile');
+  }
+
+  $('.controls > #sad').click(function() {
+    sadFace();
+  });
+
+  $('.controls > #neutral').click(function() {
+    neutralFace();
+  });
+
+  $('.controls > #happy').click(function() {
+    happyFace();
+  });
+
   var ws = new WebSocket("ws://localhost:8080/analyze-email/");
   ws.onmessage = function(e) {
-    setSubject(e.data);
-//    for (email in e.data['email']) {
-//      
-//    }
+    var email = JSON.parse(e.data);
+    setSubject(email['subj']);
+    if (email['sentiment'] > 50) {
+      happyFace();
+    } else if (email['sentiment'] == 50) {
+      neutralFace();
+    } else {
+      sadFace();
+    }
   };
 });
-
-(function() {
-
-
-function sadFace() {
-  $('body').removeClass('neutral');
-  $('body').removeClass('smile');
-  $('body').addClass('frown');
-
-  $('.eye').removeClass('neutral');
-  $('.eye').removeClass('smile');
-  $('.eye').addClass('frown');
-
-  $('.mouth').removeClass('neutral');
-  $('.mouth').removeClass('smile');
-  $('.mouth').addClass('frown');
-
-  $('.mouth > h1').removeClass('neutral');
-  $('.mouth > h1').removeClass('smile');
-  $('.mouth > h1').addClass('frown');
-}
-
-function neutralFace() {
-  $('body').removeClass('frown');
-  $('body').removeClass('smile');
-  $('body').addClass('neutral');
-
-  $('.eye').removeClass('frown');
-  $('.eye').removeClass('smile');
-  $('.eye').addClass('neutral');
-
-  $('.mouth').removeClass('frown');
-  $('.mouth').removeClass('smile');
-  $('.mouth').addClass('neutral');
-
-  $('.mouth > h1').removeClass('frown');
-  $('.mouth > h1').removeClass('smile');
-  $('.mouth > h1').addClass('neutral');
-}
-
-function happyFace() {
-  $('body').removeClass('frown');
-  $('body').removeClass('neutral');
-  $('body').addClass('smile');
-
-  $('.eye').removeClass('frown');
-  $('.eye').removeClass('neutral');
-  $('.eye').addClass('smile');
-
-  $('.mouth').removeClass('frown');
-  $('.mouth').removeClass('neutral');
-  $('.mouth').addClass('smile');
-
-  $('.mouth > h1').removeClass('frown');
-  $('.mouth > h1').removeClass('neutral');
-  $('.mouth > h1').addClass('smile');
-}
-
-$('.controls > #sad').click(function() {
-  sadFace();
-});
-
-$('.controls > #neutral').click(function() {
-  neutralFace();
-});
-
-$('.controls > #happy').click(function() {
-  happyFace();
-});
-
-})();
   </script>
 
 </body>
