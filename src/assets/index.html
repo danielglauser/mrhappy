@@ -278,8 +278,20 @@ h1:before {
   <script>
 
 $(document).ready(function() {
-var ws = new WebSocket("ws://localhost:8080/analyze-email/");
-ws.onmessage = function(e) { console.log(e.data) };
+  function setSubject(subject) {
+    $('.subject > h1').fadeOut(function() {
+      $('.subject > h1').html(subject);
+      $('.subject > h1').fadeIn();
+    });
+  }
+
+  var ws = new WebSocket("ws://localhost:8080/analyze-email/");
+  ws.onmessage = function(e) {
+    setSubject(e.data);
+//    for (email in e.data['email']) {
+//      
+//    }
+  };
 });
 
 (function() {
