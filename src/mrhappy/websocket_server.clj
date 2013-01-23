@@ -8,6 +8,8 @@
 (defonce broadcast-channel (lamina/channel* :grounded? true
                                             :permanent? true))
 
+(defonce analyzed-emails (atom nil))
+
 (defn parse-subject
   [text] (re-find #"Subject: " text))
 
@@ -34,7 +36,7 @@ strongsubj-negative   0%
         subject (parse-subject text)]
     {:subj subject :sentiment (convert-to-percentage sentiment)}))
 
-(defn ^:async analyze-email [{:keys [channel] :as request}]
+(defn ^:async subscribe [{:keys [channel] :as request}]
   (lamina/siphon broadcast-channel channel))
 
 (defn serve-index [request]
@@ -43,26 +45,35 @@ strongsubj-negative   0%
 (def urls
   (dispatch/urls
    #"^/$" #'serve-index
-   #"^/analyze-email/$" #'analyze-email))
+   #"^/analyze-email/$" #'subscribe))
 
 (defonce executor (Executors/newScheduledThreadPool 1))
 
-(defn ballsify []
+(defn ballsify! []
+  "Sends the first element of the seq down the broadcast-channel and fearlessly mutates
+the analyzed emails moving the first element to the end of the seq."
+  (let [first-chunk (first @analyzed-emails)
+        rest-chunks (rest @analyzed-emails)]
+    (lamina/enqueue broadcast-channel first-chunk)
+    (swap! analyzed-emails #(conj rest-chunks first-chunk))))
+
+(defn compute-sentiment! []
   (let [dir (clojure.java.io/file "data/email")
         files (file-seq dir)]
     (println (str "Found " (count files) " file(s)"))
-    (lamina/enqueue broadcast-channel "{\"what\":true}")
-    #_(map #(-> %
-                slurp
-                analyze)
-           (rest files))))
+    (reset! analyzed-emails
+            (map #(-> %
+                      slurp
+                      analyze)
+                 (rest files)))))
 
 (defn -main []
+  (compute-sentiment!)
   (laeggen/start {:port 8080
                   :append-slash? false
                   :urls urls
                   :websocket true})
-  (.scheduleAtFixedRate executor #'ballsify 0 1000 TimeUnit/MILLISECONDS))
+  (.scheduleAtFixedRate executor #'ballsify! 0 1000 TimeUnit/MILLISECONDS))
 
 ;; (-main)
 
