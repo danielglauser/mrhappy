@@ -7,7 +7,7 @@
 
   <title>CSS Smiley Face - CodePen</title>
 
-  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="assets/css/normalize.css">
 
   <style>
 @import url(http://fonts.googleapis.com/css?family=Chivo:900);
@@ -243,7 +243,7 @@ h1:before {
 
   </style>
 
-  <script src="js/prefixfree.min.js"></script>
+  <script src="assets/js/prefixfree.min.js"></script>
 
 </head>
 
@@ -271,14 +271,14 @@ h1:before {
 </div>
 </body>
 
-  <script src="js/jquery-latest.js"></script>
-  <script src="js/jquery.websocket-0.0.1.js"></script>
-  <script src="js/jquery.json-2.2.min.js"></script>
+  <script src="assets/js/jquery-1.9.0.min.js"></script>
+  <script src="assets/js/jquery.websocket-0.0.1.js"></script>
+  <script src="assets/js/jquery.json-2.2.min.js"></script>
 
   <script>
 (function() {
 
-var ws = $.websocket('ws://127.0.0.1:8080/', {
+ws = $.websocket('ws://127.0.0.1:8080/analyzed-email/', {
   events: {
     message: function(e) {
       console.log(e);

@@ -63,14 +63,14 @@ strongsubj-negative   0%
 (defn websocket-server [passthrough]
   (reset! webserver
           (doto (WebServers/createWebServer 8080)
-            (.add "/websocket"
+            (.add "/"
                   (proxy [WebSocketHandler] []
-                    (onOpen [c] (do
-                                  (prn "opened" c)
-                                  (swap! chanels conj c)))
-                    (onClose [c] (do
-                                   (prn "closed" c)
-                                   (swap! chanels (fn [v] (remove #(= %1 c) v)))))
+                    (onOpen [connection] (do
+                                  (prn "opened" connection)
+                                  (swap! chanels conj connection)))
+                    (onClose [connection] (do
+                                   (prn "closed" connection)
+                                   (swap! chanels (fn [v] (remove #(= %1 connection) v)))))
                     (onMessage [channel msg] (println msg))))
 
             (.add (StaticFileHandler. "./public/"))
