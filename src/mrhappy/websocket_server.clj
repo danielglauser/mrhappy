@@ -2,7 +2,11 @@
   (:require [sentimental.core :as sentimental]
             [laeggen.core :as laeggen]
             [laeggen.dispatch :as dispatch]
-            [lamina.core :as lamina]))
+            [lamina.core :as lamina])
+  (:import (java.util.concurrent Executors TimeUnit)))
+
+(defonce broadcast-channel (lamina/channel* :grounded? true
+                                            :permanent? true))
 
 (defn parse-subject
   [text] (re-find #"Subject: " text))
@@ -18,12 +22,12 @@ strongsubj-negative   0%
 "
   [str]
   (cond
-    (= "strongsubj-positive" str) 100
-    (= "weaksubj-positive") 80
-    (= "strongsubj-neutral") 60
-    (= "weaksubj-neutral") 40
-    (= "weaksubj-negative") 20
-    (= "strongsubj-negative") 0))
+   (= "strongsubj-positive" str) 100
+   (= "weaksubj-positive") 80
+   (= "strongsubj-neutral") 60
+   (= "weaksubj-neutral") 40
+   (= "weaksubj-negative") 20
+   (= "strongsubj-negative") 0))
 
 (defn analyze [text]
   (let [sentiment (sentimental/categorize text)
@@ -31,14 +35,7 @@ strongsubj-negative   0%
     {:subj subject :sentiment (convert-to-percentage sentiment)}))
 
 (defn ^:async analyze-email [{:keys [channel] :as request}]
-  (let [dir (clojure.java.io/file "data/email")
-        files (file-seq dir)]
-    (println (str "Found " (count files) " file(s)"))
-    (lamina/enqueue channel "{\"what\":true}")
-    #_(map #(-> %
-                slurp
-                analyze)
-           (rest files))))
+  (lamina/siphon broadcast-channel channel))
 
 (defn serve-index [request]
   (slurp "src/assets/index.html"))
@@ -48,10 +45,25 @@ strongsubj-negative   0%
    #"^/$" #'serve-index
    #"^/analyze-email/$" #'analyze-email))
 
+(defonce executor (Executors/newScheduledThreadPool 1))
+
+(defn ballsify []
+  (let [dir (clojure.java.io/file "data/email")
+        files (file-seq dir)]
+    (println (str "Found " (count files) " file(s)"))
+    (lamina/enqueue broadcast-channel "{\"what\":true}")
+    #_(map #(-> %
+                slurp
+                analyze)
+           (rest files))))
+
 (defn -main []
   (laeggen/start {:port 8080
                   :append-slash? false
                   :urls urls
-                  :websocket true}))
+                  :websocket true})
+  (.scheduleAtFixedRate executor #'ballsify 0 1000 TimeUnit/MILLISECONDS))
+
+;; (-main)
 
 ;; (swap! laeggen/routes assoc 8080 (dispatch/merge-urls laeggen.views/default-urls urls))
