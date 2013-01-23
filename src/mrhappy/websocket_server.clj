@@ -53,6 +53,14 @@ strongsubj-negative   0%
 
 (defonce executor (Executors/newScheduledThreadPool 1))
 
+(defn rotate
+  "Given a seq rotates the first value to be the last value."
+  [init-seq]
+  (let [init-vec (vec init-seq)
+        first-vec (first init-vec)
+        rest-vec (vec (rest init-vec))]
+    (conj rest-vec first-vec)))
+
 (defn ballsify!
   "Sends the first element of the seq down the broadcast-channel and fearlessly mutates
 the analyzed emails moving the first element to the end of the seq."
@@ -62,7 +70,7 @@ the analyzed emails moving the first element to the end of the seq."
           rest-chunks (rest @analyzed-emails)]
       (prn (str "Pumping: " first-chunk ", next up: " (first rest-chunks)))
       (lamina/enqueue broadcast-channel (generate-string first-chunk))
-      (swap! analyzed-emails (fn [state-seq] (let [state (vec state-seq)] (conj (rest state) (first state))))))
+      (swap! analyzed-emails rotate))
     (catch Exception ex (println "Boom!: " (.printStackTrace ex)))))
 
 (defn compute-sentiment! []
