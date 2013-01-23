@@ -30,16 +30,15 @@ strongsubj-negative   0%
         subject (parse-subject text)]
     {:subj subject :sentiment (convert-to-percentage sentiment)}))
 
-(defn ^:async analyze-email [{:keys [channel]}]
+(defn ^:async analyze-email [{:keys [channel] :as request}]
   (let [dir (clojure.java.io/file "data/email")
         files (file-seq dir)]
     (println (str "Found " (count files) " file(s)"))
-    (prn channel)
-    (lamina/enqueue channel "Wassup biatches!!")
+    (lamina/enqueue channel "{\"what\":true}")
     #_(map #(-> %
-              slurp
-              analyze)
-         (rest files))))
+                slurp
+                analyze)
+           (rest files))))
 
 (defn serve-index [request]
   (slurp "src/assets/index.html"))
@@ -47,10 +46,12 @@ strongsubj-negative   0%
 (def urls
   (dispatch/urls
    #"^/$" #'serve-index
-   #"^/analyzed-email/$" #'analyze-email))
+   #"^/analyze-email/$" #'analyze-email))
 
 (defn -main []
   (laeggen/start {:port 8080
                   :append-slash? false
                   :urls urls
                   :websocket true}))
+
+;; (swap! laeggen/routes assoc 8080 (dispatch/merge-urls laeggen.views/default-urls urls))

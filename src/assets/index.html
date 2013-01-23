@@ -276,15 +276,14 @@ h1:before {
   <script src="assets/js/jquery.json-2.2.min.js"></script>
 
   <script>
+
+$(document).ready(function() {
+var ws = new WebSocket("ws://localhost:8080/analyze-email/");
+ws.onmessage = function(e) { console.log(e.data) };
+});
+
 (function() {
 
-ws = $.websocket('ws://127.0.0.1:8080/analyzed-email/', {
-  events: {
-    message: function(e) {
-      console.log(e);
-    }
-  }
-});
 
 function sadFace() {
   $('body').removeClass('neutral');
