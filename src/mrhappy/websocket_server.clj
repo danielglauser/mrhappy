@@ -2,7 +2,8 @@
   (:require [sentimental.core :as sentimental]
             [laeggen.core :as laeggen]
             [laeggen.dispatch :as dispatch]
-            [lamina.core :as lamina])
+            [lamina.core :as lamina]
+            [cheshire.core :refer :all])
   (:import (java.util.concurrent Executors TimeUnit)))
 
 (defonce broadcast-channel (lamina/channel* :grounded? true
@@ -49,18 +50,22 @@ strongsubj-negative   0%
 
 (defonce executor (Executors/newScheduledThreadPool 1))
 
-(defn ballsify! []
+(defn ballsify!
   "Sends the first element of the seq down the broadcast-channel and fearlessly mutates
 the analyzed emails moving the first element to the end of the seq."
-  (let [first-chunk (first @analyzed-emails)
-        rest-chunks (rest @analyzed-emails)]
-    (lamina/enqueue broadcast-channel first-chunk)
-    (swap! analyzed-emails #(conj rest-chunks first-chunk))))
+  []
+  (try
+    (let [first-chunk (first @analyzed-emails)
+          rest-chunks (rest @analyzed-emails)]
+      (prn (str "Pumping: " first-chunk))
+      (lamina/enqueue broadcast-channel (generate-string first-chunk))
+      (swap! analyzed-emails (fn [state] (conj (rest state) (first state)))))
+    (catch Exception ex (println "Boom!: " (.getMessage ex)))))
 
 (defn compute-sentiment! []
   (let [dir (clojure.java.io/file "data/email")
         files (file-seq dir)]
-    (println (str "Found " (count files) " file(s)"))
+    (println (str "Computing sentiment, found " (count files) " email file(s)"))
     (reset! analyzed-emails
             (map #(-> %
                       slurp
