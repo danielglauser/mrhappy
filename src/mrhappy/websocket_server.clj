@@ -11,8 +11,11 @@
 
 (defonce analyzed-emails (atom nil))
 
-(defn parse-subject
-  [text] (re-find #"Subject: " text))
+(defn parse-subject [text]
+  (if (not-empty text)
+    (let [subj-line (re-find #"Subject: .+" text)]
+      (if (not-empty subj-line)
+        (subs subj-line (.length "Subject: "))))))
 
 (defn convert-to-percentage
   "Takes in one of the following forms and maps it to a percentage of happiness:
@@ -57,10 +60,10 @@ the analyzed emails moving the first element to the end of the seq."
   (try
     (let [first-chunk (first @analyzed-emails)
           rest-chunks (rest @analyzed-emails)]
-      (prn (str "Pumping: " first-chunk))
+      (prn (str "Pumping: " first-chunk ", next up: " (first rest-chunks)))
       (lamina/enqueue broadcast-channel (generate-string first-chunk))
-      (swap! analyzed-emails (fn [state] (conj (rest state) (first state)))))
-    (catch Exception ex (println "Boom!: " (.getMessage ex)))))
+      (swap! analyzed-emails (fn [state-seq] (let [state (vec state-seq)] (conj (rest state) (first state))))))
+    (catch Exception ex (println "Boom!: " (.printStackTrace ex)))))
 
 (defn compute-sentiment! []
   (let [dir (clojure.java.io/file "data/email")
