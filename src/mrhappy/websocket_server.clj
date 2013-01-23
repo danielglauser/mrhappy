@@ -36,8 +36,8 @@ strongsubj-negative   0%
    (= "strongsubj-negative") 0))
 
 (defn analyze [text]
-  (let [sentiment (sentimental/categorize text)
-        subject (parse-subject text)]
+  (let [subject (parse-subject text)
+        sentiment (sentimental/categorize subject)]
     {:subj subject :sentiment (convert-to-percentage sentiment)}))
 
 (defn ^:async subscribe [{:keys [channel] :as request}]
@@ -68,7 +68,7 @@ the analyzed emails moving the first element to the end of the seq."
   (try
     (let [first-chunk (first @analyzed-emails)
           rest-chunks (rest @analyzed-emails)]
-      (prn (str "Pumping: " first-chunk ", next up: " (first rest-chunks)))
+      (prn (str "Pumping: " first-chunk))
       (lamina/enqueue broadcast-channel (generate-string first-chunk))
       (swap! analyzed-emails rotate))
     (catch Exception ex (println "Boom!: " (.printStackTrace ex)))))
