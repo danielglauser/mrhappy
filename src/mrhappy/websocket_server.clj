@@ -17,28 +17,27 @@
       (if (not-empty subj-line)
         (subs subj-line (.length "Subject: "))))))
 
-(defn convert-to-percentage
+(defn convert-to-happyness-percentage
   "Takes in one of the following forms and maps it to a percentage of happiness:
-strongsubj-positive 100%
-weaksubj-positive    80%
-strongsubj-neutral   60%
-weaksubj-neutral     40%
-weaksubj-negative    20%
-strongsubj-negative   0%
-"
+    strongsubj-positive 100%
+    weaksubj-positive    80%
+    strongsubj-neutral   60%
+    weaksubj-neutral     40%
+    weaksubj-negative    20%
+    strongsubj-negative   0%"
   [str]
   (cond
-   (= "strongsubj-positive" str) 100
-   (= "weaksubj-positive") 80
-   (= "strongsubj-neutral") 60
-   (= "weaksubj-neutral") 40
-   (= "weaksubj-negative") 20
-   (= "strongsubj-negative") 0))
+    (= "strongsubj-positive" str) 100
+    (= "weaksubj-positive"   str)  80
+    (= "strongsubj-neutral"  str)  60
+    (= "weaksubj-neutral"    str)  40
+    (= "weaksubj-negative"   str)  20
+    (= "strongsubj-negative" str)   0))
 
 (defn analyze [text]
   (let [subject (parse-subject text)
         sentiment (sentimental/categorize subject)]
-    {:subj subject :sentiment (convert-to-percentage sentiment)}))
+    {:subj subject :sentiment (convert-to-happyness-percentage sentiment)}))
 
 (defn ^:async subscribe [{:keys [channel] :as request}]
   (lamina/siphon broadcast-channel channel))
