@@ -356,18 +356,20 @@ $(document).ready(function() {
   ws.onmessage = function(e) {
     var email = JSON.parse(e.data);
     setSubject(email['subj']);
-/*    if (email['sentiment'] > 50) {
+    if (email['sentiment'] > 60) {
       happyFace();
-    } else if (email['sentiment'] == 50) {
+    } else if ( (email['sentiment'] <= 60) && (email['sentiment'] >= 40) ) {
       neutralFace();
-    } else {
+    } else if (email['sentiment'] < 40) {
       sadFace();
-    }*/
-    if (email['sentiment'] == 100) {
-      happyFace();
     } else {
       sadFace();
     }
+/*    if (email['sentiment'] == 100) {
+      happyFace();
+    } else {
+      sadFace();
+    }*/
   };
 });
   </script>
