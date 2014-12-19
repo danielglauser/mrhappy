@@ -60,9 +60,10 @@
         rest-vec (vec (rest init-vec))]
     (conj rest-vec first-vec)))
 
-(defn ballsify!
-  "Sends the first element of the seq down the broadcast-channel and fearlessly mutates
-the analyzed emails moving the first element to the end of the seq."
+(defn shipit!
+  "Sends the first element of the seq down the broadcast-channel and
+  fearlessly mutates the analyzed emails moving the first element to
+  the end of the seq."
   []
   (try
     (let [first-chunk (first @analyzed-emails)
@@ -88,7 +89,7 @@ the analyzed emails moving the first element to the end of the seq."
                   :append-slash? false
                   :urls urls
                   :websocket true})
-  (.scheduleAtFixedRate executor #'ballsify! 0 1000 TimeUnit/MILLISECONDS))
+  (.scheduleAtFixedRate executor #'shipit! 0 1000 TimeUnit/MILLISECONDS))
 
 ;; (-main)
 
